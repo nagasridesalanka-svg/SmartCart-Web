@@ -11,6 +11,8 @@ import cors from 'cors';
 import authRoutes from './routes/authRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
+import orderRoutes from './routes/orderRoutes.js';
+import supportRoutes from './routes/supportRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -45,6 +47,8 @@ app.use((req, res, next) => {
 app.use('/api', authRoutes);
 app.use('/api', productRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api', supportRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

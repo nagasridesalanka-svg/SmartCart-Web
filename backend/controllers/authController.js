@@ -1,10 +1,11 @@
 /**
  * SmartCart - Auth Controller
- * Handles user registration, credentials verification, JWT issuance, and profile retrieval.
+ * Handles user registration, credentials verification, JWT issuance, and profile retrieval/updating.
  */
 
 import User from '../models/User.js';
 import { generateToken } from '../config/jwt.js';
+import db from '../config/db.js';
 
 export const authController = {
   /**
@@ -44,8 +45,11 @@ export const authController = {
         });
       }
 
+      // Trim and lowercase email
+      const cleanEmail = email.trim().toLowerCase();
+
       // 2. Check if user already exists
-      const existingUser = User.findByEmail(email);
+      const existingUser = User.findByEmail(cleanEmail);
       if (existingUser) {
         return res.status(409).json({
           success: false,
@@ -53,11 +57,11 @@ export const authController = {
         });
       }
 
-      // 3. Create user record
+      // 3. Create user record with bcrypt password hash
       const newUser = User.create({
         fullName: fullName.trim(),
-        email: email.trim().toLowerCase(),
-        password,
+        email: cleanEmail,
+        password: password,
         phone: phone ? phone.trim() : '',
         address: address ? address.trim() : '',
         role: 'customer'
@@ -94,19 +98,23 @@ export const authController = {
         });
       }
 
-      const user = User.findByEmail(email);
+      // Trim and lowercase email
+      const cleanEmail = email.trim().toLowerCase();
+      const user = User.findByEmail(cleanEmail);
+
       if (!user) {
         return res.status(401).json({
           success: false,
-          message: 'Invalid email or password.'
+          message: 'No account found with this email'
         });
       }
 
+      // Validate bcrypt password
       const isValidPassword = User.comparePassword(password, user.PASSWORD);
       if (!isValidPassword) {
         return res.status(401).json({
           success: false,
-          message: 'Invalid email or password.'
+          message: 'Incorrect password'
         });
       }
 
@@ -130,14 +138,98 @@ export const authController = {
   },
 
   /**
-   * GET /api/me
-   * Returns current authenticated user data
+   * GET /api/profile and GET /api/me
+   * Returns current authenticated user data with order summary metrics
    */
   async getProfile(req, res) {
-    return res.status(200).json({
-      success: true,
-      user: req.user
-    });
+    try {
+      const user = User.findById(req.user.USER_ID);
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: 'User account not found.'
+        });
+      }
+
+      const orders = db.rawDb.prepare('SELECT TOTAL_AMOUNT FROM ORDERS WHERE USER_ID = ?').all(req.user.USER_ID);
+      const totalOrders = orders.length;
+      const totalSpent = orders.reduce((sum, o) => sum + Number(o.TOTAL_AMOUNT || 0), 0);
+
+      return res.status(200).json({
+        success: true,
+        user: User.sanitize(user),
+        orderSummary: {
+          totalOrders,
+          totalSpent: Number(totalSpent.toFixed(2))
+        }
+      });
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to retrieve profile information.'
+      });
+    }
+  },
+
+  /**
+   * PUT /api/profile
+   * Updates user full name, phone number (validated 10 digits), and address
+   */
+  async updateProfile(req, res) {
+    try {
+      const { fullName, phone, address } = req.body;
+
+      if (!fullName || fullName.trim().length < 2) {
+        return res.status(400).json({
+          success: false,
+          message: 'Full name must be at least 2 characters.'
+        });
+      }
+
+      // Validate phone number has 10 digits
+      const rawPhone = (phone || '').trim();
+      const phoneDigits = rawPhone.replace(/\D/g, '');
+      if (phoneDigits.length !== 10) {
+        return res.status(400).json({
+          success: false,
+          message: 'Phone number must have exactly 10 digits.'
+        });
+      }
+
+      const cleanAddress = (address || '').trim();
+
+      const stmt = db.rawDb.prepare(`
+        UPDATE USERS
+        SET FULL_NAME = ?, PHONE = ?, ADDRESS = ?
+        WHERE USER_ID = ?
+      `);
+
+      stmt.run(fullName.trim(), rawPhone, cleanAddress, req.user.USER_ID);
+
+      const updatedUser = User.findById(req.user.USER_ID);
+
+      // Re-fetch order metrics
+      const orders = db.rawDb.prepare('SELECT TOTAL_AMOUNT FROM ORDERS WHERE USER_ID = ?').all(req.user.USER_ID);
+      const totalOrders = orders.length;
+      const totalSpent = orders.reduce((sum, o) => sum + Number(o.TOTAL_AMOUNT || 0), 0);
+
+      return res.status(200).json({
+        success: true,
+        message: 'Profile updated successfully!',
+        user: User.sanitize(updatedUser),
+        orderSummary: {
+          totalOrders,
+          totalSpent: Number(totalSpent.toFixed(2))
+        }
+      });
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to update profile.'
+      });
+    }
   }
 };
 

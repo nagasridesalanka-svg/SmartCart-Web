@@ -4,8 +4,208 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Customer Support &amp; Helpdesk — SmartCart</title>
-  <meta name="description" content="Reach our customer care team, submit a ticket, or browse FAQs." />
+  <meta name="description" content="Submit support tickets, track resolutions, browse FAQs, and provide service feedback." />
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* Support Tabs Styling */
+    .support-tabs {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 32px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+    .support-tab-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border: none;
+      background: none;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      position: relative;
+      white-space: nowrap;
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      transition: color 0.15s ease;
+    }
+    .support-tab-btn:hover {
+      color: var(--text);
+    }
+    .support-tab-btn.active {
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .support-tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--primary);
+      border-radius: 3px 3px 0 0;
+    }
+    .support-tab-panel {
+      display: none;
+    }
+    .support-tab-panel.active {
+      display: block;
+      animation: tabFadeIn 0.2s ease-out;
+    }
+    @keyframes tabFadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Badges */
+    .badge-status-open { background: #EEF2FF; color: #4338CA; border: 1px solid #C7D2FE; }
+    .badge-status-in-progress { background: #FEF3C7; color: #B45309; border: 1px solid #FDE68A; }
+    .badge-status-resolved { background: #DCFCE7; color: #15803D; border: 1px solid #BBF7D0; }
+    .badge-status-closed { background: #F3F4F6; color: #4B5563; border: 1px solid #E5E7EB; }
+
+    .badge-priority-high { background: #FEE2E2; color: #B91C1C; border: 1px solid #FECACA; }
+    .badge-priority-medium { background: #FEF3C7; color: #B45309; border: 1px solid #FDE68A; }
+    .badge-priority-low { background: #E0F2FE; color: #0369A1; border: 1px solid #BAE6FD; }
+
+    /* Progress Timeline */
+    .ticket-timeline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      margin: 24px 0 16px;
+      padding: 0 10px;
+    }
+    .ticket-timeline::before {
+      content: '';
+      position: absolute;
+      top: 14px;
+      left: 30px;
+      right: 30px;
+      height: 3px;
+      background: #E5E7EB;
+      z-index: 1;
+    }
+    .timeline-progress-bar {
+      position: absolute;
+      top: 14px;
+      left: 30px;
+      height: 3px;
+      background: var(--primary);
+      z-index: 2;
+      transition: width 0.3s ease;
+    }
+    .timeline-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 3;
+    }
+    .timeline-dot {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 3px solid #D1D5DB;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #6B7280;
+      transition: all 0.2s ease;
+    }
+    .timeline-step.completed .timeline-dot {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+    }
+    .timeline-step.current .timeline-dot {
+      background: var(--surface);
+      border-color: var(--primary);
+      color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+    }
+    .timeline-label {
+      font-size: 0.75rem;
+      margin-top: 8px;
+      color: var(--muted);
+      font-weight: 500;
+      text-align: center;
+    }
+    .timeline-step.completed .timeline-label,
+    .timeline-step.current .timeline-label {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* FAQ Accordion */
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      margin-bottom: 12px;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+    .faq-item:hover {
+      border-color: #D1D5DB;
+    }
+    .faq-question {
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      font-weight: 600;
+      font-size: 0.9375rem;
+    }
+    .faq-chevron {
+      color: var(--muted);
+      transition: transform 0.2s ease;
+    }
+    .faq-item.open .faq-chevron {
+      transform: rotate(180deg);
+      color: var(--primary);
+    }
+    .faq-answer {
+      display: none;
+      padding: 0 20px 18px;
+      color: var(--muted);
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+
+    /* Star Rating Widget */
+    .star-rating-box {
+      display: flex;
+      gap: 8px;
+      margin: 8px 0 16px;
+    }
+    .star-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      color: #D1D5DB;
+      transition: transform 0.15s ease, color 0.15s ease;
+    }
+    .star-btn:hover {
+      transform: scale(1.15);
+    }
+    .star-btn.filled {
+      color: #F59E0B;
+    }
+  </style>
 </head>
 <body>
 
@@ -63,58 +263,252 @@
         </button>
       </div>
     </div>
+
+    <!-- Mobile Drawer -->
+    <div id="mobile-nav" class="mobile-nav">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="products.html" class="nav-link">Products Catalog</a>
+      <a href="support.html" class="nav-link active">Support</a>
+      <a href="cart.html" class="nav-link">Cart</a>
+      <a href="orders.html" class="nav-link">Order History</a>
+    </div>
   </header>
 
-  <!-- Support Content -->
-  <main class="container" style="padding-top: 40px; padding-bottom: 64px;">
-    <div style="max-width: 800px; margin: 0 auto;">
-      <h1 style="margin-bottom: 8px;">Customer Support</h1>
-      <p style="margin-bottom: 32px;">Have questions regarding an order, shipment, or product details? We are here to assist.</p>
+  <!-- Support Main Content -->
+  <main class="container" style="padding-top: 40px; padding-bottom: 64px; max-width: 880px;">
+    <div style="margin-bottom: 24px;">
+      <h1 style="margin-bottom: 6px;">Smart Support Helpdesk</h1>
+      <p class="text-muted">Create inquiry tickets, monitor progress milestones, browse FAQs, or leave service feedback.</p>
+    </div>
 
-      <div class="card" style="padding: 32px; margin-bottom: 40px;">
-        <h3 style="margin-bottom: 20px;">Open a Support Ticket</h3>
-        <form id="support-ticket-form">
+    <!-- 4 Support Tabs -->
+    <div class="support-tabs" role="tablist">
+      <button type="button" class="support-tab-btn active" data-tab="create" role="tab">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="16"></line>
+          <line x1="8" y1="12" x2="16" y2="12"></line>
+        </svg>
+        <span>Create Ticket</span>
+      </button>
+
+      <button type="button" class="support-tab-btn" data-tab="track" role="tab">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span>Track Tickets</span>
+      </button>
+
+      <button type="button" class="support-tab-btn" data-tab="faq" role="tab">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        <span>FAQ</span>
+      </button>
+
+      <button type="button" class="support-tab-btn" data-tab="feedback" role="tab">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <span>Feedback</span>
+      </button>
+    </div>
+
+    <!-- TAB 1: Create Ticket -->
+    <div id="tab-panel-create" class="support-tab-panel active" role="tabpanel">
+      <div class="card" style="padding: 32px;">
+        <h3 style="margin-bottom: 6px;">Submit a Support Inquiry</h3>
+        <p class="text-xs text-muted" style="margin-bottom: 24px;">
+          Choose your affected order and select the issue type. Priority is automatically assigned to ensure high-severity tickets receive prompt attention.
+        </p>
+
+        <form id="create-ticket-form">
           <div class="form-group">
-            <label class="form-label">Contact Email Address</label>
-            <input type="email" id="support-email" class="form-control" placeholder="name@example.com" required />
+            <label class="form-label" for="ticket-order-id">Select Related Order</label>
+            <select id="ticket-order-id" class="form-control">
+              <option value="">General inquiry (No specific order)</option>
+              <!-- Populated dynamically with user's orders -->
+            </select>
+            <span class="text-xs text-muted" style="margin-top:4px; display:block;">Select an order if your inquiry pertains to a recent delivery or purchase.</span>
           </div>
 
           <div class="form-group">
-            <label class="form-label">Inquiry Category</label>
-            <select id="support-issue-type" class="form-control">
-              <option value="Order Tracking">Order &amp; Delivery Tracking</option>
-              <option value="Product Question">Product Specification Inquiry</option>
-              <option value="Return or Exchange">Returns &amp; Refund Request</option>
-              <option value="Billing Issue">Payment &amp; Billing Assistance</option>
-              <option value="Technical Support">Website or Technical Bug</option>
+            <label class="form-label" for="ticket-issue-type">Issue Type <span style="color:var(--danger)">*</span></label>
+            <select id="ticket-issue-type" class="form-control" required>
+              <option value="Delayed Delivery">Delayed Delivery</option>
+              <option value="Refund Request">Refund Request</option>
+              <option value="Damaged Product">Damaged Product</option>
+              <option value="Payment Issue">Payment Issue</option>
+              <option value="Other">Other</option>
             </select>
           </div>
 
-          <div class="form-group">
-            <label class="form-label">Detailed Message</label>
-            <textarea id="support-message" class="form-control" rows="4" placeholder="Please provide order number and details..." required></textarea>
+          <!-- Live Priority Assignment Banner -->
+          <div style="background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); padding:14px 16px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+            <div>
+              <span class="text-xs text-muted font-medium">AUTO-ASSIGNED PRIORITY:</span>
+              <div id="priority-note" class="text-xs text-muted" style="margin-top:2px;">
+                Low priority queue for standard inquiries.
+              </div>
+            </div>
+            <div id="priority-badge-display">
+              <span class="badge badge-priority-low" style="font-weight:600;">Low Priority</span>
+            </div>
           </div>
 
-          <button type="submit" class="btn btn-primary">Submit Ticket</button>
+          <div class="form-group">
+            <label class="form-label" for="ticket-description">Detailed Description <span style="color:var(--danger)">*</span></label>
+            <textarea id="ticket-description" class="form-control" rows="4" placeholder="Explain the issue with product details, delivery tracking milestones, or courier packaging condition..." required></textarea>
+            <div id="ticket-desc-error" class="form-error"></div>
+          </div>
+
+          <button type="submit" id="btn-submit-ticket" class="btn btn-primary btn-lg" style="margin-top:8px;">
+            <span>Submit Ticket &rarr;</span>
+          </button>
         </form>
       </div>
+    </div>
 
-      <!-- FAQ Section -->
-      <div>
-        <h3 style="margin-bottom: 20px;">Frequently Asked Questions</h3>
-        <div style="display:flex; flex-direction:column; gap:16px;">
-          <div class="card" style="padding: 20px;">
-            <h4 style="margin-bottom: 6px;">How fast do you dispatch orders?</h4>
-            <p class="text-sm">All in-stock orders received before 2:00 PM EST are packaged and handed to our courier partners on the same business day.</p>
+    <!-- TAB 2: Track Tickets -->
+    <div id="tab-panel-track" class="support-tab-panel" role="tabpanel">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+        <h3 style="font-size:1.25rem;">Active &amp; Past Support Tickets</h3>
+        <button type="button" id="btn-refresh-tickets" class="btn btn-outline btn-sm">Refresh List</button>
+      </div>
+
+      <div id="track-tickets-container">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- TAB 3: FAQ -->
+    <div id="tab-panel-faq" class="support-tab-panel" role="tabpanel">
+      <div style="margin-bottom: 24px;">
+        <h3 style="margin-bottom: 6px;">Frequently Asked Questions</h3>
+        <p class="text-xs text-muted">Quick answers to common questions about orders, payments, warranties, and returns.</p>
+      </div>
+
+      <div id="faq-accordion-container">
+        <!-- 8 Realistic E-commerce FAQ Items -->
+        <div class="faq-item open">
+          <div class="faq-question">
+            <span>What is your standard delivery timeframe and shipping cost?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="faq-chevron">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
           </div>
-          <div class="card" style="padding: 20px;">
-            <h4 style="margin-bottom: 6px;">What is your returns policy?</h4>
-            <p class="text-sm">We provide a 30-day no-questions-asked refund policy for items in original condition and packaging.</p>
+          <div class="faq-answer">
+            We offer standard tracked courier delivery across all regions within 2 to 4 business days for a flat rate of $9.99. Orders exceeding $150 qualify for 100% FREE standard shipping automatically applied at checkout.
           </div>
-          <div class="card" style="padding: 20px;">
-            <h4 style="margin-bottom: 6px;">Do products include manufacturer warranties?</h4>
-            <p class="text-sm">Yes, all electronic and hardware equipment includes a comprehensive 2-year warranty covering manufacturing defects.</p>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>How do I track the courier transit status of my order?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="faq-chevron">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
           </div>
+          <div class="faq-answer">
+            As soon as our fulfillment warehouse processes your package, you can monitor milestone progression under the <a href="orders.html" style="color:var(--primary); text-decoration:underline;">Order History</a> tab. You can also view live delivery addresses and item snapshots.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>What is SmartCart's return and refund policy?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="faq-chevron">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+          <div class="faq-answer">
+            We offer a comprehensive 30-day return policy. Items must be returned in their original packaging and undamaged condition. Once received and inspected at our return center, your full refund is processed within 3 to 5 business days.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Which payment methods are accepted during checkout?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="faq-chevron">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+          <div class="faq-answer">
+            SmartCart accepts all major Credit/Debit Cards (Visa, MasterCard, American Express), UPI and Instant Net Banking, and Cash on Delivery (COD). In this preview environment, payments are simulated with instant confirmation.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>What should I do if an item arrives damaged or defective?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="faq-chevron">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+          <div class="faq-answer">
+            Please open a ticket in the 'Create Ticket' tab with the issue type 'Damaged Product'. These tickets are automatically prioritized with High urgency, and our dedicated team will arrange a free immediate replacement or full refund.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Can I modify my shipping address or cancel an order after placing it?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="faq-chevron">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+          <div class="faq-answer">
+            Orders can be updated or cancelled as long as they remain in the 'Placed' status before courier hand-off. Please submit a support ticket immediately with your Order ID, or update your default address in your Account Profile.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Do electronic items and peripherals include warranty coverage?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="faq-chevron">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+          <div class="faq-answer">
+            Yes, every electronic device, audio equipment, and mechanical peripheral sold on SmartCart includes a 2-year manufacturer warranty covering internal hardware malfunctions, charging controller defects, and component failures.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>How are refunds credited back to my payment account?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="faq-chevron">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+          <div class="faq-answer">
+            Approved refunds are credited automatically back to the original method of payment (Card or UPI). For Cash on Delivery orders, our support representative will contact you to securely arrange an instant bank transfer.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: Feedback -->
+    <div id="tab-panel-feedback" class="support-tab-panel" role="tabpanel">
+      <div class="card" style="padding: 32px; margin-bottom: 32px;">
+        <h3 style="margin-bottom: 6px;">Support Service Feedback</h3>
+        <p class="text-xs text-muted" style="margin-bottom: 24px;">
+          Customer feedback is available exclusively for <strong>Resolved</strong> support tickets, and can only be submitted once per ticket.
+        </p>
+
+        <div id="feedback-form-container">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Past Submitted Feedbacks List -->
+      <div id="past-feedback-section" style="display:none;">
+        <h4 style="font-size:1.125rem; margin-bottom:16px;">Your Previously Submitted Feedback</h4>
+        <div id="past-feedback-list" style="display:flex; flex-direction:column; gap:16px;">
+          <!-- Injected by JS -->
         </div>
       </div>
     </div>
@@ -124,7 +518,8 @@
   <footer class="footer">
     <div class="container">
       <div class="footer-bottom">
-        <div>&copy; 2026 SmartCart Inc. All rights reserved.</div>
+        <div>&copy; 2026 SmartCart Inc. All rights reserved. Helpdesk &amp; Support.</div>
+        <div><a href="products.html">Continue Shopping</a></div>
       </div>
     </div>
   </footer>

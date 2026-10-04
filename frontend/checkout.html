@@ -6,6 +6,67 @@
   <title>Checkout — SmartCart</title>
   <meta name="description" content="Secure checkout for your SmartCart order." />
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .payment-option-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      background: var(--surface);
+      transition: var(--transition);
+      position: relative;
+    }
+    .payment-option-card:hover {
+      border-color: var(--primary);
+    }
+    .payment-option-card.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      box-shadow: 0 0 0 1px var(--primary);
+    }
+    .payment-option-card input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+    .confirmation-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 40px 32px;
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto;
+      box-shadow: var(--shadow-card);
+    }
+    .confirmation-badge-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--success-light);
+      color: var(--success);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .order-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      text-align: left;
+      background: var(--bg);
+      padding: 20px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      margin: 24px 0;
+      font-size: 0.875rem;
+    }
+  </style>
 </head>
 <body>
 
@@ -36,7 +97,7 @@
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
-          <input type="search" name="search" placeholder="Search catalog..." aria-label="Search items" />
+          <input type="search" name="search" placeholder="Search items..." aria-label="Search items" />
         </form>
       </div>
 
@@ -53,53 +114,210 @@
         <div id="nav-auth-container">
           <a href="login.html" class="btn btn-primary btn-sm">Sign In</a>
         </div>
+
+        <button id="mobile-menu-toggle" class="mobile-menu-toggle" aria-label="Toggle Navigation Menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
       </div>
+    </div>
+
+    <!-- Mobile Drawer -->
+    <div id="mobile-nav" class="mobile-nav">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="products.html" class="nav-link">Products Catalog</a>
+      <a href="support.html" class="nav-link">Support</a>
+      <a href="cart.html" class="nav-link">Cart</a>
     </div>
   </header>
 
-  <!-- Checkout View -->
-  <main class="container" style="padding-top: 40px; padding-bottom: 64px; max-width: 800px;">
-    <h1 style="margin-bottom: 8px;">Order Checkout</h1>
-    <p style="margin-bottom: 32px;">Shipping destination and payment authorization.</p>
+  <!-- Checkout Main Container -->
+  <main class="container" style="padding-top: 40px; padding-bottom: 64px;">
+    <!-- Loading State -->
+    <div id="checkout-loading" style="text-align:center; padding: 64px 0;">
+      <span class="spinner" style="border-top-color: var(--primary); width: 36px; height: 36px;"></span>
+      <p style="margin-top: 16px;">Preparing checkout...</p>
+    </div>
 
-    <div class="card" style="padding: 32px;">
-      <h3 style="margin-bottom: 20px;">1. Shipping Information</h3>
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-        <div class="form-group">
-          <label class="form-label">Full Name</label>
-          <input type="text" class="form-control" id="co-name" placeholder="John Doe" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Email Address</label>
-          <input type="email" class="form-control" id="co-email" placeholder="john.doe@example.com" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Delivery Street Address</label>
-        <input type="text" class="form-control" id="co-address" placeholder="742 Evergreen Terrace, Springfield" />
+    <!-- Checkout Active View -->
+    <div id="checkout-view" style="display:none;">
+      <div style="margin-bottom: 24px;">
+        <h1 style="margin-bottom: 4px;">Order Checkout</h1>
+        <p class="text-muted">Review order summary, specify delivery destination, and confirm payment.</p>
       </div>
 
-      <h3 style="margin: 28px 0 20px;">2. Payment Method</h3>
-      <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:24px;">
-        <label class="card" style="padding:16px; display:flex; align-items:center; gap:12px; cursor:pointer;">
-          <input type="radio" name="payment" value="card" checked />
-          <div>
-            <strong>Credit / Debit Card</strong>
-            <p class="text-xs text-muted">Visa, Mastercard, American Express</p>
+      <div style="display:grid; grid-template-columns: minmax(0, 1.8fr) minmax(320px, 1.2fr); gap: 32px; align-items: start;">
+        <!-- Left: Forms -->
+        <div style="display:flex; flex-direction:column; gap:24px;">
+          <!-- 1. Shipping Details Card -->
+          <div class="card" style="padding: 28px;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
+              <span style="width:28px; height:28px; border-radius:50%; background:var(--primary); color:#fff; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:0.875rem;">1</span>
+              <h2 style="font-size:1.125rem;">Delivery &amp; Shipping Address</h2>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="co-name">Full Name</label>
+                <input type="text" class="form-control" id="co-name" placeholder="John Doe" readonly style="background:var(--bg);" />
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="co-email">Email Address</label>
+                <input type="email" class="form-control" id="co-email" placeholder="john.doe@example.com" readonly style="background:var(--bg);" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="co-address">Shipping Delivery Address <span class="required" style="color:var(--danger)">*</span></label>
+              <textarea class="form-control" id="co-address" rows="3" placeholder="Street address, apartment/suite, city, state, postal code..." required></textarea>
+              <div id="co-address-error" class="form-error" style="margin-top:4px;"></div>
+            </div>
+
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label" for="co-phone">Contact Phone Number</label>
+              <input type="tel" class="form-control" id="co-phone" placeholder="+1 (555) 012-3456" />
+            </div>
           </div>
-        </label>
-        <label class="card" style="padding:16px; display:flex; align-items:center; gap:12px; cursor:pointer;">
-          <input type="radio" name="payment" value="cod" />
-          <div>
-            <strong>Cash on Delivery</strong>
-            <p class="text-xs text-muted">Pay securely upon delivery arrival</p>
-          </div>
-        </label>
-      </div>
 
-      <button type="button" id="btn-place-order" class="btn btn-primary btn-block btn-lg">
-        Place Order &rarr;
-      </button>
+          <!-- 2. Payment Method Card -->
+          <div class="card" style="padding: 28px;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+              <span style="width:28px; height:28px; border-radius:50%; background:var(--primary); color:#fff; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:0.875rem;">2</span>
+              <h2 style="font-size:1.125rem;">Payment Method</h2>
+            </div>
+            <p class="text-xs text-muted" style="margin-bottom:20px;">
+              Payments are simulated in this environment — no real banking credentials or gateway required.
+            </p>
+
+            <div style="display:flex; flex-direction:column; gap:12px;" id="payment-options-group">
+              <!-- Card Option -->
+              <label class="payment-option-card selected" id="opt-card">
+                <input type="radio" name="paymentMethod" value="Card" checked />
+                <div style="display:flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:var(--radius-sm); background:var(--primary-light); color:var(--primary);">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                    <line x1="1" y1="10" x2="23" y2="10"></line>
+                  </svg>
+                </div>
+                <div style="flex:1;">
+                  <div style="font-weight:600; font-size:0.9375rem;">Credit / Debit Card</div>
+                  <div class="text-xs text-muted">Simulated instant authorization (Visa, Mastercard, Amex)</div>
+                </div>
+                <span class="badge badge-success" style="font-size:0.75rem;">Instant</span>
+              </label>
+
+              <!-- UPI Option -->
+              <label class="payment-option-card" id="opt-upi">
+                <input type="radio" name="paymentMethod" value="UPI" />
+                <div style="display:flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:var(--radius-sm); background:#FEF3C7; color:#D97706;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                    <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                  </svg>
+                </div>
+                <div style="flex:1;">
+                  <div style="font-weight:600; font-size:0.9375rem;">UPI &amp; Instant Banking</div>
+                  <div class="text-xs text-muted">Simulated QR / VPA instant confirmation (GPay, PhonePe, Paytm)</div>
+                </div>
+                <span class="badge badge-success" style="font-size:0.75rem;">Instant</span>
+              </label>
+
+              <!-- Cash on Delivery Option -->
+              <label class="payment-option-card" id="opt-cod">
+                <input type="radio" name="paymentMethod" value="Cash on Delivery" />
+                <div style="display:flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:var(--radius-sm); background:#E0E7FF; color:#4338CA;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                    <circle cx="12" cy="12" r="2"></circle>
+                    <path d="M6 12h.01M18 12h.01"></path>
+                  </svg>
+                </div>
+                <div style="flex:1;">
+                  <div style="font-weight:600; font-size:0.9375rem;">Cash on Delivery (COD)</div>
+                  <div class="text-xs text-muted">Pay securely upon delivery arrival (Payment status: Pending)</div>
+                </div>
+                <span class="badge badge-warning" style="font-size:0.75rem;">Pay on Delivery</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Order Summary Sidebar -->
+        <div class="card" style="padding: 24px; position:sticky; top:88px;">
+          <h3 style="margin-bottom: 16px; font-size:1.125rem;">Order Summary</h3>
+
+          <!-- Items list preview -->
+          <div id="co-items-list" style="max-height: 260px; overflow-y:auto; margin-bottom:16px; border-bottom:1px solid var(--border); padding-bottom:16px; display:flex; flex-direction:column; gap:12px;">
+            <!-- Injected by JS -->
+          </div>
+
+          <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.875rem;">
+            <span class="text-muted">Subtotal</span>
+            <span class="font-medium" id="co-subtotal">$0.00</span>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.875rem;">
+            <span class="text-muted">Courier Delivery</span>
+            <span class="font-medium" id="co-shipping">$0.00</span>
+          </div>
+
+          <div style="border-top:1px solid var(--border); padding-top:16px; margin-top:12px; display:flex; justify-content:space-between; align-items:baseline;">
+            <span style="font-size:1rem; font-weight:600;">Total Amount</span>
+            <span style="font-size:1.375rem; font-weight:700; color:var(--text);" id="co-total">$0.00</span>
+          </div>
+
+          <button type="button" id="btn-confirm-order" class="btn btn-primary btn-block btn-lg" style="margin-top:24px;">
+            <span>Place Order</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:6px;">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </button>
+
+          <p class="text-xs text-muted" style="text-align:center; margin-top:16px;">
+            By placing your order, you agree to SmartCart's minimal terms and customer privacy policies.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Confirmation Screen -->
+    <div id="checkout-confirmation" style="display:none;">
+      <div class="confirmation-card">
+        <div class="confirmation-badge-icon">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+
+        <h1 style="font-size:1.75rem; margin-bottom:8px;">Thank You! Order Placed</h1>
+        <p class="text-muted">Your order has been recorded and will be prepared for courier dispatch shortly.</p>
+
+        <div class="order-meta-grid" id="conf-meta-grid">
+          <!-- Injected by confirmation renderer -->
+        </div>
+
+        <div style="margin-bottom:24px; text-align:left;">
+          <h4 style="font-size:0.9375rem; margin-bottom:12px; font-weight:600;">Purchased Items</h4>
+          <div id="conf-items-list" style="border:1px solid var(--border); border-radius:var(--radius); padding:16px; background:var(--bg); display:flex; flex-direction:column; gap:10px;">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:center; gap:16px; flex-wrap:wrap;">
+          <a href="orders.html" class="btn btn-primary btn-lg">
+            <span>View Order History</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:6px;">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+          <a href="products.html" class="btn btn-outline btn-lg">
+            Continue Shopping
+          </a>
+        </div>
+      </div>
     </div>
   </main>
 
@@ -107,8 +325,8 @@
   <footer class="footer">
     <div class="container">
       <div class="footer-bottom">
-        <div>&copy; 2026 SmartCart Inc. All rights reserved.</div>
-        <div><a href="support.html">Contact Support</a></div>
+        <div>&copy; 2026 SmartCart Inc. All rights reserved. Secure Checkout.</div>
+        <div><a href="support.html">Need help with checkout?</a></div>
       </div>
     </div>
   </footer>
@@ -118,23 +336,195 @@
   <script type="module" src="js/cart.js"></script>
   <script type="module" src="js/auth.js"></script>
   <script type="module">
-    import { showToast, AuthStorage } from './js/api.js';
+    import { api, AuthStorage, showToast, escapeHtml } from './js/api.js';
     import { CartManager } from './js/cart.js';
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const user = AuthStorage.getUser();
-      if (user) {
-        document.getElementById('co-name').value = user.FULL_NAME || '';
-        document.getElementById('co-email').value = user.EMAIL || '';
-        document.getElementById('co-address').value = user.ADDRESS || '';
+    document.addEventListener('DOMContentLoaded', async () => {
+      const loadingEl = document.getElementById('checkout-loading');
+      const checkoutViewEl = document.getElementById('checkout-view');
+      const confirmationEl = document.getElementById('checkout-confirmation');
+
+      // 1. Authentication check: redirect to login if not logged in
+      if (!AuthStorage.isAuthenticated()) {
+        showToast('Please sign in to proceed with checkout.', 'info');
+        setTimeout(() => {
+          window.location.href = 'login.html?redirect=checkout.html';
+        }, 500);
+        return;
       }
 
-      document.getElementById('btn-place-order')?.addEventListener('click', () => {
-        showToast('Your order has been recorded! Thank you for choosing SmartCart.', 'success');
-        CartManager.saveItems([]);
+      // 2. Fetch cart and check if empty
+      let cart = null;
+      try {
+        cart = await CartManager.fetchCart();
+      } catch (e) {
+        console.error('Failed to load cart for checkout:', e);
+      }
+
+      if (!cart || !cart.items || cart.items.length === 0) {
+        showToast('Your shopping cart is empty. Add items before checking out.', 'info');
         setTimeout(() => {
-          window.location.href = 'orders.html';
-        }, 1200);
+          window.location.href = 'cart.html';
+        }, 600);
+        return;
+      }
+
+      // Hide loading, show checkout view
+      loadingEl.style.display = 'none';
+      checkoutViewEl.style.display = 'block';
+
+      // 3. Prefill user profile details
+      const user = AuthStorage.getUser() || {};
+      const nameInput = document.getElementById('co-name');
+      const emailInput = document.getElementById('co-email');
+      const addressInput = document.getElementById('co-address');
+      const phoneInput = document.getElementById('co-phone');
+
+      if (nameInput) nameInput.value = user.FULL_NAME || '';
+      if (emailInput) emailInput.value = user.EMAIL || '';
+      if (addressInput && user.ADDRESS) addressInput.value = user.ADDRESS;
+      if (phoneInput && user.PHONE) phoneInput.value = user.PHONE;
+
+      // 4. Render Cart Items & Summary
+      const itemsListContainer = document.getElementById('co-items-list');
+      const subtotalEl = document.getElementById('co-subtotal');
+      const shippingEl = document.getElementById('co-shipping');
+      const totalEl = document.getElementById('co-total');
+
+      const subtotal = Number(cart.subtotal) || 0;
+      const shipping = subtotal > 150 ? 0 : 9.99;
+      const total = subtotal + shipping;
+
+      if (itemsListContainer) {
+        itemsListContainer.innerHTML = cart.items.map(item => `
+          <div style="display:flex; gap:12px; align-items:center;">
+            <img src="${escapeHtml(item.IMAGE_URL)}" alt="${escapeHtml(item.PRODUCT_NAME)}" style="width:48px; height:48px; object-fit:cover; border-radius:var(--radius-sm); border:1px solid var(--border);" />
+            <div style="flex:1; min-width:0;">
+              <div style="font-size:0.875rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                ${escapeHtml(item.PRODUCT_NAME)}
+              </div>
+              <div class="text-xs text-muted">
+                Qty: ${item.QUANTITY} &times; $${Number(item.PRICE).toFixed(2)}
+              </div>
+            </div>
+            <div style="font-weight:600; font-size:0.875rem;">
+              $${Number(item.SUBTOTAL).toFixed(2)}
+            </div>
+          </div>
+        `).join('');
+      }
+
+      if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+      if (shippingEl) shippingEl.textContent = shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`;
+      if (totalEl) totalEl.textContent = `$${total.toFixed(2)}`;
+
+      // 5. Selectable payment option cards
+      const paymentCards = document.querySelectorAll('.payment-option-card');
+      paymentCards.forEach(card => {
+        card.addEventListener('click', () => {
+          paymentCards.forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+          const radio = card.querySelector('input[type="radio"]');
+          if (radio) radio.checked = true;
+        });
+      });
+
+      // 6. Handle Place Order
+      const placeOrderBtn = document.getElementById('btn-confirm-order');
+      const addressError = document.getElementById('co-address-error');
+
+      placeOrderBtn?.addEventListener('click', async () => {
+        const addressVal = addressInput.value.trim();
+
+        if (!addressVal || addressVal.length < 5) {
+          addressInput.classList.add('error');
+          if (addressError) {
+            addressError.textContent = 'Please enter a complete delivery address (street, city, zip).';
+            addressError.classList.add('visible');
+          }
+          addressInput.focus();
+          return;
+        }
+
+        addressInput.classList.remove('error');
+        if (addressError) addressError.classList.remove('visible');
+
+        const selectedPaymentRadio = document.querySelector('input[name="paymentMethod"]:checked');
+        const paymentMethod = selectedPaymentRadio ? selectedPaymentRadio.value : 'Card';
+
+        const originalBtnHtml = placeOrderBtn.innerHTML;
+        placeOrderBtn.disabled = true;
+        placeOrderBtn.innerHTML = `<span class="spinner" style="width:18px; height:18px; border-width:2px; display:inline-block; vertical-align:middle; margin-right:8px;"></span> <span>Authorizing &amp; Placing Order...</span>`;
+
+        try {
+          const res = await api.post('/orders', {
+            shippingAddress: addressVal,
+            paymentMethod: paymentMethod
+          });
+
+          // Reset cart badge to 0
+          CartManager.updateBadges(0);
+
+          // Show confirmation screen
+          checkoutViewEl.style.display = 'none';
+          confirmationEl.style.display = 'block';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+
+          const order = res.order;
+          const confGrid = document.getElementById('conf-meta-grid');
+          if (confGrid) {
+            confGrid.innerHTML = `
+              <div>
+                <span class="text-muted">Order Identifier</span>
+                <div style="font-weight:700; font-size:1rem; margin-top:2px;">#SC-${order.orderId}</div>
+              </div>
+              <div>
+                <span class="text-muted">Order Status</span>
+                <div style="margin-top:2px;"><span class="badge badge-success">${order.orderStatus}</span></div>
+              </div>
+              <div>
+                <span class="text-muted">Total Paid / Charged</span>
+                <div style="font-weight:700; font-size:1.125rem; color:var(--text); margin-top:2px;">$${Number(order.totalAmount).toFixed(2)}</div>
+              </div>
+              <div>
+                <span class="text-muted">Payment Method</span>
+                <div style="font-weight:600; margin-top:2px;">
+                  ${order.paymentMethod}
+                  <span class="badge ${order.paymentStatus === 'Success' ? 'badge-success' : 'badge-warning'}" style="margin-left:6px; font-size:0.75rem;">
+                    ${order.paymentStatus}
+                  </span>
+                </div>
+              </div>
+              <div style="grid-column: 1 / -1;">
+                <span class="text-muted">Delivery Address</span>
+                <div style="font-weight:500; margin-top:2px;">${escapeHtml(order.shippingAddress)}</div>
+              </div>
+            `;
+          }
+
+          const confItemsList = document.getElementById('conf-items-list');
+          if (confItemsList && order.items) {
+            confItemsList.innerHTML = order.items.map(it => `
+              <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.875rem;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  ${it.IMAGE_URL ? `<img src="${escapeHtml(it.IMAGE_URL)}" style="width:36px; height:36px; object-fit:cover; border-radius:var(--radius-sm);" />` : ''}
+                  <div>
+                    <span style="font-weight:600;">${escapeHtml(it.PRODUCT_NAME || 'Product')}</span>
+                    <span class="text-xs text-muted" style="margin-left:6px;">&times; ${it.QUANTITY}</span>
+                  </div>
+                </div>
+                <div style="font-weight:600;">$${(Number(it.PRICE) * Number(it.QUANTITY)).toFixed(2)}</div>
+              </div>
+            `).join('');
+          }
+
+          showToast('Order confirmed! Thank you for purchasing from SmartCart.', 'success');
+
+        } catch (err) {
+          showToast(err.message || 'Failed to place order.', 'error');
+          placeOrderBtn.disabled = false;
+          placeOrderBtn.innerHTML = originalBtnHtml;
+        }
       });
     });
   </script>

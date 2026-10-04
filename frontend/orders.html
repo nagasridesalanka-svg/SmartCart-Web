@@ -6,6 +6,83 @@
   <title>Your Orders — SmartCart</title>
   <meta name="description" content="View past orders and tracking updates." />
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* Order status badge colors */
+    .badge-status-placed {
+      background: #EEF2FF;
+      color: #4338CA;
+      border: 1px solid #C7D2FE;
+    }
+    .badge-status-shipped {
+      background: #FEF3C7;
+      color: #B45309;
+      border: 1px solid #FDE68A;
+    }
+    .badge-status-delivered {
+      background: #DCFCE7;
+      color: #15803D;
+      border: 1px solid #BBF7D0;
+    }
+    .badge-status-cancelled {
+      background: #FEE2E2;
+      color: #B91C1C;
+      border: 1px solid #FECACA;
+    }
+
+    /* Accordion styles */
+    .order-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+      margin-bottom: 20px;
+      overflow: hidden;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+    .order-card:hover {
+      box-shadow: var(--shadow-card);
+    }
+    .order-card-header {
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      background: var(--surface);
+      transition: background 0.15s ease;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .order-card-header:hover {
+      background: #F9FAFB;
+    }
+    .order-card.expanded .order-card-header {
+      border-bottom: 1px solid var(--border);
+      background: #F9FAFB;
+    }
+    .order-card-chevron {
+      transition: transform 0.25s ease;
+      color: var(--muted);
+    }
+    .order-card.expanded .order-card-chevron {
+      transform: rotate(180deg);
+      color: var(--primary);
+    }
+    .order-card-body {
+      display: none;
+      padding: 24px;
+      background: var(--surface);
+      animation: fadeIn 0.2s ease-out;
+    }
+    .order-card.expanded .order-card-body {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
 
@@ -53,17 +130,41 @@
         <div id="nav-auth-container">
           <a href="login.html" class="btn btn-primary btn-sm">Sign In</a>
         </div>
+
+        <button id="mobile-menu-toggle" class="mobile-menu-toggle" aria-label="Toggle Navigation Menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
       </div>
+    </div>
+
+    <!-- Mobile Drawer -->
+    <div id="mobile-nav" class="mobile-nav">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="products.html" class="nav-link">Products Catalog</a>
+      <a href="support.html" class="nav-link">Support</a>
+      <a href="cart.html" class="nav-link">Cart</a>
     </div>
   </header>
 
   <!-- Orders Main -->
-  <main class="container" style="padding-top: 40px; padding-bottom: 64px; max-width: 900px;">
-    <h1 style="margin-bottom: 8px;">Order History</h1>
-    <p style="margin-bottom: 32px;">Manage and monitor your purchases and deliveries.</p>
+  <main class="container" style="padding-top: 40px; padding-bottom: 64px; max-width: 960px;">
+    <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom: 28px; flex-wrap:wrap; gap:12px;">
+      <div>
+        <h1 style="margin-bottom: 6px;">Your Orders</h1>
+        <p class="text-muted">Monitor past purchases, tracking milestones, and item breakdown.</p>
+      </div>
+      <a href="products.html" class="btn btn-outline btn-sm">&larr; Back to Shop</a>
+    </div>
 
     <div id="orders-list-container">
-      <!-- Injected by orders.js -->
+      <div style="text-align: center; padding: 64px 0;">
+        <span class="spinner" style="border-top-color: var(--primary); width: 36px; height: 36px;"></span>
+        <p style="margin-top: 14px;">Loading order history...</p>
+      </div>
     </div>
   </main>
 
@@ -71,7 +172,7 @@
   <footer class="footer">
     <div class="container">
       <div class="footer-bottom">
-        <div>&copy; 2026 SmartCart Inc. All rights reserved.</div>
+        <div>&copy; 2026 SmartCart Inc. All rights reserved. Order History.</div>
         <div><a href="support.html">Need help with an order?</a></div>
       </div>
     </div>
