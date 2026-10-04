@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Account — SmartCart</title>
+  <meta name="description" content="Register for a new SmartCart account to order products and track purchases." />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- Sticky Top Navbar -->
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <div class="nav-left">
+        <a href="index.html" class="brand-logo" aria-label="SmartCart Home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          <span>SmartCart</span>
+        </a>
+        <nav>
+          <ul class="nav-links">
+            <li><a href="index.html" class="nav-link">Home</a></li>
+            <li><a href="products.html" class="nav-link">Products</a></li>
+            <li><a href="support.html" class="nav-link">Support</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="nav-center">
+        <form class="nav-search" action="products.html" method="GET">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="search" name="search" placeholder="Search catalog..." aria-label="Search items" />
+        </form>
+      </div>
+
+      <div class="nav-right">
+        <a href="cart.html" class="cart-btn" aria-label="Shopping Cart">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+          <span class="cart-badge" style="display:none;">0</span>
+        </a>
+
+        <div id="nav-auth-container">
+          <a href="login.html" class="btn btn-primary btn-sm">Sign In</a>
+        </div>
+
+        <button id="mobile-menu-toggle" class="mobile-menu-toggle" aria-label="Toggle Navigation Menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Register Form Main -->
+  <main class="container auth-page">
+    <div class="auth-card" style="max-width: 480px;">
+      <div class="auth-header">
+        <h1>Create an Account</h1>
+        <p>Join SmartCart for seamless order management and tracking.</p>
+      </div>
+
+      <form id="register-form" novalidate>
+        <div class="form-group">
+          <label for="fullName" class="form-label">Full Name <span class="required">*</span></label>
+          <input type="text" id="fullName" class="form-control" placeholder="e.g. Eleanor Vance" required autocomplete="name" />
+          <div id="fullName-error" class="form-error"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="email" class="form-label">Email Address <span class="required">*</span></label>
+          <input type="email" id="email" class="form-control" placeholder="name@example.com" required autocomplete="email" />
+          <div id="email-error" class="form-error"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="phone" class="form-label">Phone Number</label>
+          <input type="tel" id="phone" class="form-control" placeholder="+1 (555) 012-3456" autocomplete="tel" />
+          <div id="phone-error" class="form-error"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="password" class="form-label">Password <span class="required">*</span></label>
+          <input type="password" id="password" class="form-control" placeholder="At least 6 characters" required autocomplete="new-password" />
+          <div id="password-error" class="form-error"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword" class="form-label">Confirm Password <span class="required">*</span></label>
+          <input type="password" id="confirmPassword" class="form-control" placeholder="Re-enter your password" required autocomplete="new-password" />
+          <div id="confirmPassword-error" class="form-error"></div>
+        </div>
+
+        <button type="submit" id="register-submit-btn" class="btn btn-primary btn-block">
+          <span>Create Account</span>
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        Already have an account? <a href="login.html">Sign in here</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <div>&copy; 2026 SmartCart Inc. All rights reserved.</div>
+        <div><a href="support.html">Need assistance?</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/cart.js"></script>
+  <script type="module" src="js/auth.js"></script>
+</body>
+</html>

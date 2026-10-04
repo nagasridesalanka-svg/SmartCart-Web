@@ -1,0 +1,389 @@
+{
+  "tables": {
+    "USERS": [
+      {
+        "USER_ID": 1,
+        "FULL_NAME": "System Administrator",
+        "EMAIL": "admin@smartcart.com",
+        "PASSWORD": "$2b$10$NqNzpkCJp.9oTtVYgdPO7OoA6ekVKuARzYtPt7Iz/xGuju40SXk4.",
+        "PHONE": "+1 (555) 019-9000",
+        "ADDRESS": "100 Tech Hub Boulevard, Suite 500, San Francisco, CA 94107",
+        "ROLE": "admin",
+        "CREATED_AT": "2026-10-04T06:11:39.310Z"
+      },
+      {
+        "USER_ID": 2,
+        "FULL_NAME": "John Doe",
+        "EMAIL": "john.doe@example.com",
+        "PASSWORD": "$2b$10$NqNzpkCJp.9oTtVYgdPO7Ot5MbiYpFaFVEc7PTu6O87UoCVY7wEJy",
+        "PHONE": "+1 (555) 014-2345",
+        "ADDRESS": "742 Evergreen Terrace, Springfield, OR 97477",
+        "ROLE": "customer",
+        "CREATED_AT": "2026-10-04T06:11:39.310Z"
+      }
+    ],
+    "CATEGORIES": [
+      {
+        "CATEGORY_ID": 1,
+        "CATEGORY_NAME": "Electronics",
+        "DESCRIPTION": "Laptops, audio equipment, smartphones, and smart workspace gadgets"
+      },
+      {
+        "CATEGORY_ID": 2,
+        "CATEGORY_NAME": "Fashion & Apparel",
+        "DESCRIPTION": "Minimalist wardrobe staples, organic cotton wear, and everyday essentials"
+      },
+      {
+        "CATEGORY_ID": 3,
+        "CATEGORY_NAME": "Home & Living",
+        "DESCRIPTION": "Clean aesthetic furniture, ambient lighting, and functional home decor"
+      },
+      {
+        "CATEGORY_ID": 4,
+        "CATEGORY_NAME": "Books & Stationery",
+        "DESCRIPTION": "Curated architectural books, premium fountain pens, and minimal notebooks"
+      },
+      {
+        "CATEGORY_ID": 5,
+        "CATEGORY_NAME": "Health & Wellness",
+        "DESCRIPTION": "Clean skincare formulations, wellness tools, and daily mindfulness essentials"
+      }
+    ],
+    "PRODUCTS": [
+      {
+        "PRODUCT_ID": 1,
+        "CATEGORY_ID": 1,
+        "PRODUCT_NAME": "AeroSound Pro Noise-Cancelling Headphones",
+        "DESCRIPTION": "Precision-engineered over-ear wireless headphones with active noise cancellation, 40-hour battery life, and plush memory foam ear cushions.",
+        "PRICE": 249.99,
+        "IMAGE_URL": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80",
+        "IS_ACTIVE": 1,
+        "CREATED_AT": "2026-10-04T06:11:39.310Z"
+      },
+      {
+        "PRODUCT_ID": 2,
+        "CATEGORY_ID": 1,
+        "PRODUCT_NAME": "Studio Minimalist Mechanical Keyboard",
+        "DESCRIPTION": "Compact 75% layout keyboard with custom lubricated linear switches, solid aluminum chassis, and subtle warm white backlighting.",
+        "PRICE": 129.5,
+        "IMAGE_URL": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800&auto=format&fit=crop&q=80",
+        "IS_ACTIVE": 1,
+        "CREATED_AT": "2026-10-04T06:11:39.310Z"
+      },
+      {
+        "PRODUCT_ID": 3,
+        "CATEGORY_ID": 1,
+        "PRODUCT_NAME": "OmniCharge MagFast Wireless Charging Stand",
+        "DESCRIPTION": "Machined aluminum multi-device charging hub with magnetic fast charging for smartphones, earbuds, and smartwatch concurrently.",
+        "PRICE": 79,
+        "IMAGE_URL": "https://images.unsplash.com/photo-1622445262464-84b1456045b6?w=800&auto=format&fit=crop&q=80",
+        "IS_ACTIVE": 1,
+        "CREATED_AT": "2026-10-04T06:11:39.310Z"
+      },
+      {
+        "PRODUCT_ID": 4,
+        "CATEGORY_ID": 1,
+        "PRODUCT_NAME": "Verve Smart Fitness Timepiece",
+        "DESCRIPTION": "Ultra-slim titanium smartwatch with continuous biometric tracking, sapphire crystal glass, and 7-day battery endurance.",
+        "PRICE": 199,
+        "IMAGE_URL": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=80",
+        "IS_ACTIVE": 1,
+        "CREATED_AT": "2026-10-04T06:11:39.310Z"
+      },
+      {
+        "PRODUCT_ID": 5,
+        "CATEGORY_ID": 2,
+        "PRODUCT_NAME": "Heritage Organic Heavyweight Tee",
+        "DESCRIPTION": "Crafted from 100% GOTS-certified combed organic cotton with a relaxed boxy cut, reinforced crew neckline, and pre-shrunk finish.",
+        "PRICE": 38,
+        "IMAGE_URL": "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&auto=format&fit=crop&q=80",
+        "IS_ACTIVE": 1,
+        "CREATED_AT": "2026-10-04T06:11:39.310Z"
+      },
+      {
+        "PRODUCT_ID": 6,
+        "CATEGORY_ID": 2,
+        "PRODUCT_NAME": "Komorebi Wool Blend Overcoat",
+        "DESCRIPTION": "Tailored minimalist overcoat woven from recycled Italian wool blend with hidden horn button placket and satin lining.",
+        "PRICE": 289,
+        "IMAGE_URL": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=800&auto=format&fit=crop&q=80",
+        "IS_ACTIVE": 1,
+        "CREATED_AT": "2026-10-04T06:11:39.310Z"
+      },
+      {
+        "PRODUCT_ID": 7,
+        "CATEGORY_ID": 2,
+        "PRODUCT_NAME": "Everyday Canvas Commuter Backpack",
+        "DESCRIPTION": "Weatherproof waxed canvas rucksack with 16-inch padded laptop sleeve, quick-access passport pocket, and vegetable-tanned leather trim.",
+        "PRICE": 115,
+        "IMAGE_URL": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&auto=format&fit=crop&q=80",
+        "IS_ACTIVE": 1,
+        "CREATED_AT": "2026-10-04T06:11:39.310Z"
+      },
+      {
+        "PRODUCT_ID": 8,
+        "CATEGORY_ID": 3,
+        "PRODUCT_NAME": "Lumina Architectural Desk Lamp",
+        "DESCRIPTION": "Minimal cantilever desk lamp with touch-dimmable warm LED, rotating counterbalanced arm, and brass joints.",
+        "PRICE": 89,
+        "IMAGE_URL": "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800&auto=format&fit=crop&q=80",
+        "IS_ACTIVE": 1,
+        "CREATED_AT": "2026-10-04T06:11:39.310Z"
+      },
+      {
+        "PRODUCT_ID": 9,
+        "CATEGORY_ID": 3,
+        "PRODUCT_NAME": "Artisan Ceramic Pour-Over Dripper Set",
+        "DESCRIPTION": "Handcrafted stoneware pour-over dripper with matched 600ml server pitcher, finished in matte speckled sand glaze.",
+        "PRICE": 48,
+        "IMAGE_URL": "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=800&auto=format&fit=crop&q=80",
+        "IS_ACTIVE": 1,
+        "CREATED_AT": "2026-10-04T06:11:39.310Z"
+      },
+      {
+        "PRODUCT_ID": 10,
+        "CATEGORY_ID": 3,
+        "PRODUCT_NAME": "Nordic Solid Oak Floating Shelf",
+        "DESCRIPTION": "Sustainably harvested white oak wall shelf with hidden heavy-duty bracket mounting, natural beeswax wax finish.",
+        "PRICE": 64,
+        "IMAGE_URL": "https://images.unsplash.com/photo-1538688525198-9b88f6f53126?w=800&auto=format&fit=crop&q=80",
+        "IS_ACTIVE": 1,
+        "CREATED_AT": "2026-10-04T06:11:39.310Z"
+      },
+      {
+        "PRODUCT_ID": 11,
+        "CATEGORY_ID": 3,
+        "PRODUCT_NAME": "Aroma Ultrasonic Ceramic Diffuser",
+        "DESCRIPTION": "Sculptural stone-matte essential oil diffuser with whisper-quiet ultrasonic atomization and gentle warm glow night mode.",
+        "PRICE": 55,
+        "IMAGE_URL": "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=800&auto=format&fit=crop&q=80",
+        "IS_ACTIVE": 1,
+        "CREATED_AT": "2026-10-04T06:11:39.310Z"
+      },
+      {
+        "PRODUCT_ID": 12,
+        "CATEGORY_ID": 4,
+        "PRODUCT_NAME": "Grid & Form: Modern Graphic Architecture",
+        "DESCRIPTION": "Hardcover monograph detailing structural grid systems, modernist typography, and rational visual systems worldwide.",
+        "PRICE": 42,
+        "IMAGE_URL": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&auto=format&fit=crop&q=80",
+        "IS_ACTIVE": 1,
+        "CREATED_AT": "2026-10-04T06:11:39.311Z"
+      },
+      {
+        "PRODUCT_ID": 13,
+        "CATEGORY_ID": 4,
+        "PRODUCT_NAME": "Brass Precision Fountain Pen",
+        "DESCRIPTION": "Solid untreated brass writing instrument with German Schmidt iridium nib, balanced weight, and developing natural patina.",
+        "PRICE": 68,
+        "IMAGE_URL": "https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?w=800&auto=format&fit=crop&q=80",
+        "IS_ACTIVE": 1,
+        "CREATED_AT": "2026-10-04T06:11:39.311Z"
+      },
+      {
+        "PRODUCT_ID": 14,
+        "CATEGORY_ID": 4,
+        "PRODUCT_NAME": "Smyth-Sewn Hardcover Grid Journal",
+        "DESCRIPTION": "Lays flat 180 degrees. 240 numbered pages of 120gsm fountain-pen friendly Japanese paper with subtle 5mm dot grid.",
+        "PRICE": 26,
+        "IMAGE_URL": "https://images.unsplash.com/photo-1531346878377-a5be20888e57?w=800&auto=format&fit=crop&q=80",
+        "IS_ACTIVE": 1,
+        "CREATED_AT": "2026-10-04T06:11:39.311Z"
+      },
+      {
+        "PRODUCT_ID": 15,
+        "CATEGORY_ID": 5,
+        "PRODUCT_NAME": "Botanical Restorative Facial Oil",
+        "DESCRIPTION": "Cold-pressed jojoba, rosehip seed, and blue tansy blend to soothe skin barrier and restore deep hydration overnight.",
+        "PRICE": 52,
+        "IMAGE_URL": "https://images.unsplash.com/photo-1608248597359-5613532b43b6?w=800&auto=format&fit=crop&q=80",
+        "IS_ACTIVE": 1,
+        "CREATED_AT": "2026-10-04T06:11:39.311Z"
+      },
+      {
+        "PRODUCT_ID": 16,
+        "CATEGORY_ID": 5,
+        "PRODUCT_NAME": "Cast Iron Kettlebell 16kg",
+        "DESCRIPTION": "Single-pour gravity cast iron bell with smooth color-coded handle, flat machined base, and chip-resistant powder coating.",
+        "PRICE": 74,
+        "IMAGE_URL": "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=800&auto=format&fit=crop&q=80",
+        "IS_ACTIVE": 1,
+        "CREATED_AT": "2026-10-04T06:11:39.311Z"
+      }
+    ],
+    "INVENTORY": [
+      {
+        "INVENTORY_ID": 1,
+        "PRODUCT_ID": 1,
+        "STOCK_QUANTITY": 45,
+        "LAST_UPDATED": "2026-10-04T06:11:39.310Z"
+      },
+      {
+        "INVENTORY_ID": 2,
+        "PRODUCT_ID": 2,
+        "STOCK_QUANTITY": 28,
+        "LAST_UPDATED": "2026-10-04T06:11:39.310Z"
+      },
+      {
+        "INVENTORY_ID": 3,
+        "PRODUCT_ID": 3,
+        "STOCK_QUANTITY": 72,
+        "LAST_UPDATED": "2026-10-04T06:11:39.310Z"
+      },
+      {
+        "INVENTORY_ID": 4,
+        "PRODUCT_ID": 4,
+        "STOCK_QUANTITY": 30,
+        "LAST_UPDATED": "2026-10-04T06:11:39.310Z"
+      },
+      {
+        "INVENTORY_ID": 5,
+        "PRODUCT_ID": 5,
+        "STOCK_QUANTITY": 120,
+        "LAST_UPDATED": "2026-10-04T06:11:39.310Z"
+      },
+      {
+        "INVENTORY_ID": 6,
+        "PRODUCT_ID": 6,
+        "STOCK_QUANTITY": 18,
+        "LAST_UPDATED": "2026-10-04T06:11:39.310Z"
+      },
+      {
+        "INVENTORY_ID": 7,
+        "PRODUCT_ID": 7,
+        "STOCK_QUANTITY": 50,
+        "LAST_UPDATED": "2026-10-04T06:11:39.310Z"
+      },
+      {
+        "INVENTORY_ID": 8,
+        "PRODUCT_ID": 8,
+        "STOCK_QUANTITY": 35,
+        "LAST_UPDATED": "2026-10-04T06:11:39.310Z"
+      },
+      {
+        "INVENTORY_ID": 9,
+        "PRODUCT_ID": 9,
+        "STOCK_QUANTITY": 65,
+        "LAST_UPDATED": "2026-10-04T06:11:39.310Z"
+      },
+      {
+        "INVENTORY_ID": 10,
+        "PRODUCT_ID": 10,
+        "STOCK_QUANTITY": 22,
+        "LAST_UPDATED": "2026-10-04T06:11:39.310Z"
+      },
+      {
+        "INVENTORY_ID": 11,
+        "PRODUCT_ID": 11,
+        "STOCK_QUANTITY": 40,
+        "LAST_UPDATED": "2026-10-04T06:11:39.311Z"
+      },
+      {
+        "INVENTORY_ID": 12,
+        "PRODUCT_ID": 12,
+        "STOCK_QUANTITY": 85,
+        "LAST_UPDATED": "2026-10-04T06:11:39.311Z"
+      },
+      {
+        "INVENTORY_ID": 13,
+        "PRODUCT_ID": 13,
+        "STOCK_QUANTITY": 60,
+        "LAST_UPDATED": "2026-10-04T06:11:39.311Z"
+      },
+      {
+        "INVENTORY_ID": 14,
+        "PRODUCT_ID": 14,
+        "STOCK_QUANTITY": 150,
+        "LAST_UPDATED": "2026-10-04T06:11:39.311Z"
+      },
+      {
+        "INVENTORY_ID": 15,
+        "PRODUCT_ID": 15,
+        "STOCK_QUANTITY": 90,
+        "LAST_UPDATED": "2026-10-04T06:11:39.311Z"
+      },
+      {
+        "INVENTORY_ID": 16,
+        "PRODUCT_ID": 16,
+        "STOCK_QUANTITY": 14,
+        "LAST_UPDATED": "2026-10-04T06:11:39.311Z"
+      }
+    ],
+    "SHOPPING_CART": [
+      {
+        "CART_ID": 1,
+        "USER_ID": 2,
+        "PRODUCT_ID": 1,
+        "QUANTITY": 1,
+        "ADDED_AT": "2026-10-04T06:11:39.311Z"
+      }
+    ],
+    "ORDERS": [
+      {
+        "ORDER_ID": 1,
+        "USER_ID": 2,
+        "ORDER_DATE": "2026-09-29T06:11:39.311Z",
+        "TOTAL_AMOUNT": 379.49,
+        "ORDER_STATUS": "Delivered"
+      }
+    ],
+    "ORDER_DETAILS": [
+      {
+        "DETAIL_ID": 1,
+        "ORDER_ID": 1,
+        "PRODUCT_ID": 1,
+        "QUANTITY": 1,
+        "PRICE": 249.99
+      },
+      {
+        "DETAIL_ID": 2,
+        "ORDER_ID": 1,
+        "PRODUCT_ID": 2,
+        "QUANTITY": 1,
+        "PRICE": 129.5
+      }
+    ],
+    "PAYMENTS": [
+      {
+        "PAYMENT_ID": 1,
+        "ORDER_ID": 1,
+        "PAYMENT_METHOD": "Credit Card",
+        "PAYMENT_STATUS": "Completed",
+        "PAYMENT_DATE": "2026-09-29T06:11:39.312Z"
+      }
+    ],
+    "SUPPORT_TICKETS": [
+      {
+        "TICKET_ID": 1,
+        "USER_ID": 2,
+        "ORDER_ID": 1,
+        "ISSUE_TYPE": "Delivery Tracking",
+        "DESCRIPTION": "Checking delivery confirmation details for the mechanical keyboard and headphones package.",
+        "STATUS": "Resolved",
+        "PRIORITY": "Medium",
+        "CREATED_AT": "2026-09-30T06:11:39.312Z"
+      }
+    ],
+    "SUPPORT_FEEDBACK": [
+      {
+        "FEEDBACK_ID": 1,
+        "TICKET_ID": 1,
+        "RATING": 5,
+        "COMMENTS": "Quick resolution and accurate courier update. Very satisfied!"
+      }
+    ]
+  },
+  "sequences": {
+    "USERS": 3,
+    "CATEGORIES": 6,
+    "PRODUCTS": 17,
+    "INVENTORY": 17,
+    "SHOPPING_CART": 2,
+    "ORDERS": 2,
+    "ORDER_DETAILS": 3,
+    "PAYMENTS": 2,
+    "SUPPORT_TICKETS": 2,
+    "SUPPORT_FEEDBACK": 2
+  },
+  "savedAt": "2026-10-04T06:11:39.313Z"
+}
