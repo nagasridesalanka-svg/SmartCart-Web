@@ -389,6 +389,26 @@ export function initDB() {
   seedDatabase();
 }
 
+// Primary key column mappings per relational schema
+const TABLE_PK_MAP = {
+  USERS: 'USER_ID',
+  CATEGORIES: 'CATEGORY_ID',
+  PRODUCTS: 'PRODUCT_ID',
+  INVENTORY: 'INVENTORY_ID',
+  SHOPPING_CART: 'CART_ID',
+  ORDERS: 'ORDER_ID',
+  ORDER_DETAILS: 'DETAIL_ID',
+  PAYMENTS: 'PAYMENT_ID',
+  SUPPORT_TICKETS: 'TICKET_ID',
+  SUPPORT_FEEDBACK: 'FEEDBACK_ID'
+};
+
+function getPkCol(tableName, customIdCol) {
+  if (customIdCol) return customIdCol;
+  if (TABLE_PK_MAP[tableName]) return TABLE_PK_MAP[tableName];
+  return `${tableName.replace(/S$/, '')}_ID`;
+}
+
 /**
  * Table accessor object with relational helpers
  */
@@ -407,14 +427,14 @@ export const db = {
         return tables[tableName].filter(predicate);
       },
       findById(id, idColumnName) {
-        const idCol = idColumnName || `${tableName.replace(/S$/, '')}_ID`;
+        const idCol = getPkCol(tableName, idColumnName);
         return tables[tableName].find(row => row[idCol] === Number(id));
       },
       findOne(predicate) {
         return tables[tableName].find(predicate) || null;
       },
       insert(row) {
-        const idCol = `${tableName.replace(/S$/, '')}_ID`;
+        const idCol = getPkCol(tableName);
         if (!row[idCol]) {
           row[idCol] = sequences[tableName]++;
         }
@@ -423,7 +443,7 @@ export const db = {
         return row;
       },
       update(id, updates, idColumnName) {
-        const idCol = idColumnName || `${tableName.replace(/S$/, '')}_ID`;
+        const idCol = getPkCol(tableName, idColumnName);
         const index = tables[tableName].findIndex(row => row[idCol] === Number(id));
         if (index === -1) return null;
         tables[tableName][index] = { ...tables[tableName][index], ...updates };
@@ -431,7 +451,7 @@ export const db = {
         return tables[tableName][index];
       },
       delete(id, idColumnName) {
-        const idCol = idColumnName || `${tableName.replace(/S$/, '')}_ID`;
+        const idCol = getPkCol(tableName, idColumnName);
         const initialLen = tables[tableName].length;
         tables[tableName] = tables[tableName].filter(row => row[idCol] !== Number(id));
         const deleted = tables[tableName].length < initialLen;

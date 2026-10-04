@@ -164,6 +164,20 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(body)
     });
+  },
+
+  put(endpoint, body) {
+    return this.request(endpoint, {
+      method: 'PUT',
+      body: JSON.stringify(body)
+    });
+  },
+
+  delete(endpoint, body = {}) {
+    return this.request(endpoint, {
+      method: 'DELETE',
+      body: JSON.stringify(body)
+    });
   }
 };
 

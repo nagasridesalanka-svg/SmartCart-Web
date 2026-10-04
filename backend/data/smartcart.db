@@ -314,8 +314,15 @@
         "CART_ID": 1,
         "USER_ID": 2,
         "PRODUCT_ID": 1,
-        "QUANTITY": 1,
+        "QUANTITY": 5,
         "ADDED_AT": "2026-10-04T06:11:39.311Z"
+      },
+      {
+        "USER_ID": 2,
+        "PRODUCT_ID": 3,
+        "QUANTITY": 2,
+        "ADDED_AT": "2026-10-04T07:11:00.714Z",
+        "SHOPPING_CART_ID": 2
       }
     ],
     "ORDERS": [
@@ -378,12 +385,12 @@
     "CATEGORIES": 6,
     "PRODUCTS": 17,
     "INVENTORY": 17,
-    "SHOPPING_CART": 2,
+    "SHOPPING_CART": 4,
     "ORDERS": 2,
     "ORDER_DETAILS": 3,
     "PAYMENTS": 2,
     "SUPPORT_TICKETS": 2,
     "SUPPORT_FEEDBACK": 2
   },
-  "savedAt": "2026-10-04T06:11:39.313Z"
+  "savedAt": "2026-10-04T07:11:41.073Z"
 }

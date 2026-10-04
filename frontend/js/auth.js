@@ -286,8 +286,10 @@ export const AuthUI = {
         showToast(`Welcome back, ${response.user.FULL_NAME}!`, 'success');
 
         setTimeout(() => {
-          // If admin, go to admin portal or index
-          if (response.user.ROLE === 'admin') {
+          const redirectParam = params.get('redirect');
+          if (redirectParam && !redirectParam.startsWith('http') && !redirectParam.startsWith('//')) {
+            window.location.href = redirectParam;
+          } else if (response.user.ROLE === 'admin') {
             window.location.href = 'admin.html';
           } else {
             window.location.href = 'index.html';

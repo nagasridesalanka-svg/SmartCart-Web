@@ -394,9 +394,17 @@ export const ProductsController = {
         }
       });
 
-      addBtn.addEventListener('click', () => {
+      addBtn.addEventListener('click', async () => {
         const qty = parseInt(qtyInput.value, 10) || 1;
-        CartManager.addItem(product, qty);
+        const originalContent = addBtn.innerHTML;
+        addBtn.disabled = true;
+        addBtn.innerHTML = `<span class="spinner" style="width:16px; height:16px; border-width:2px; display:inline-block; vertical-align:middle; margin-right:6px;"></span> <span>Adding...</span>`;
+        try {
+          await CartManager.addItem(product, qty);
+        } finally {
+          addBtn.disabled = false;
+          addBtn.innerHTML = originalContent;
+        }
       });
 
     } catch (err) {
@@ -416,13 +424,21 @@ export const ProductsController = {
   bindAddToCartButtons(container) {
     const buttons = container.querySelectorAll('.btn-add-cart');
     buttons.forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', async (e) => {
         e.preventDefault();
         e.stopPropagation();
         const id = Number(btn.dataset.id);
         const product = this.productsCache.find(p => p.PRODUCT_ID === id);
         if (product) {
-          CartManager.addItem(product, 1);
+          const originalContent = btn.innerHTML;
+          btn.disabled = true;
+          btn.innerHTML = `<span class="spinner" style="width:14px; height:14px; border-width:2px; display:inline-block;"></span>`;
+          try {
+            await CartManager.addItem(product, 1);
+          } finally {
+            btn.disabled = false;
+            btn.innerHTML = originalContent;
+          }
         }
       });
     });

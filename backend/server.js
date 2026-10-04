@@ -5,16 +5,26 @@
 
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import cors from 'cors';
 import authRoutes from './routes/authRoutes.js';
 import productRoutes from './routes/productRoutes.js';
+import cartRoutes from './routes/cartRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+
+// Determine port: command line --port arg, or APP_PORT, or PORT if not 8080 (container internal proxy), default 3000
+const args = process.argv.slice(2);
+const portIndex = args.indexOf('--port');
+const argPort = portIndex !== -1 ? parseInt(args[portIndex + 1], 10) : null;
+const PORT = argPort || (process.env.APP_PORT ? parseInt(process.env.APP_PORT, 10) : (process.env.PORT && process.env.PORT !== '8080' ? parseInt(process.env.PORT, 10) : 3000));
+
+// Path to frontend static assets
+const FRONTEND_DIR = path.resolve(__dirname, '../frontend');
 
 // Enable CORS for all origins in development
 app.use(cors());
@@ -34,6 +44,7 @@ app.use((req, res, next) => {
 // API Routes
 app.use('/api', authRoutes);
 app.use('/api', productRoutes);
+app.use('/api/cart', cartRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -44,35 +55,30 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Path to frontend static assets
-const FRONTEND_DIR = path.resolve(__dirname, '../frontend');
-
-// Serve static frontend files (HTML, CSS, JS, Images)
+// Serve static frontend files at both root and /frontend
 app.use(express.static(FRONTEND_DIR));
+app.use('/frontend', express.static(FRONTEND_DIR));
 
 // Fallback for root route
 app.get('/', (req, res) => {
   res.sendFile(path.join(FRONTEND_DIR, 'index.html'));
 });
 
-// Catch-all for other HTML pages if requested without extension
+// Catch-all for HTML pages requested without .html extension
 app.get('/:page', (req, res, next) => {
-  const pageWithHtml = path.join(FRONTEND_DIR, `${req.params.page}.html`);
-  const regularFile = path.join(FRONTEND_DIR, req.params.page);
-  
   if (req.path.startsWith('/api')) {
     return next();
   }
+  const pageWithHtml = path.join(FRONTEND_DIR, `${req.params.page}.html`);
+  const regularFile = path.join(FRONTEND_DIR, req.params.page);
 
-  res.sendFile(pageWithHtml, (err) => {
-    if (err) {
-      res.sendFile(regularFile, (err2) => {
-        if (err2) {
-          next();
-        }
-      });
-    }
-  });
+  if (fs.existsSync(pageWithHtml) && fs.statSync(pageWithHtml).isFile()) {
+    return res.sendFile(pageWithHtml);
+  }
+  if (fs.existsSync(regularFile) && fs.statSync(regularFile).isFile()) {
+    return res.sendFile(regularFile);
+  }
+  next();
 });
 
 // 404 handler for API routes
@@ -83,10 +89,16 @@ app.use('/api/*', (req, res) => {
   });
 });
 
+// Catch-all fallback to index.html for client-side navigation
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api')) return next();
+  res.sendFile(path.join(FRONTEND_DIR, 'index.html'));
+});
+
 // Start Express server
 const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`=======================================================`);
-  console.log(`  SmartCart server is running at http://localhost:${PORT}`);
+  console.log(`  SmartCart server is running at http://0.0.0.0:${PORT}`);
   console.log(`  Frontend served from: ${FRONTEND_DIR}`);
   console.log(`  Default Admin: admin@smartcart.com / Admin@123`);
   console.log(`  Default Customer: john.doe@example.com / Customer@123`);
